@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     dataBinding {
         enabled = true
@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId "com.llollox.androidtoggleswitch_sample"
-        minSdkVersion 16
-        targetSdkVersion 25
+        minSdkVersion 17
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
 
@@ -27,11 +27,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
-    compile project(':androidtoggleswitch')
-
-//    compile 'com.llollox:androidtoggleswitch:2.0.1'
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    testImplementation 'junit:junit:4.12'
+    implementation project(':androidtoggleswitch')
 }

@@ -61,7 +61,7 @@ class ToggleSwitchButton (context: Context, var position: Int, var positionType:
 
         // Bind Views
         separator = layoutView.findViewById(R.id.separator)
-        val clickableWrapper = findViewById(R.id.clickable_wrapper)
+        val clickableWrapper = layoutView.findViewById(R.id.clickable_wrapper) as LinearLayout
 
         // Setup View
         val layoutParams = LinearLayout.LayoutParams(toggleWidth, toggleHeight, 1.0f)
