@@ -15,27 +15,28 @@ import com.llollox.androidtoggleswitch_sample.databinding.FragmentSeparatedSampl
  */
 
 public class SeparatedSamplesFragment extends BaseSamplesFragment {
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        FragmentSeparatedSamplesBinding binding = FragmentSeparatedSamplesBinding.inflate(inflater);
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    final FragmentSeparatedSamplesBinding binding = FragmentSeparatedSamplesBinding.inflate(inflater);
 
-        binding.operatorsSeparatedToggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
-            @Override
-            public void onToggleSwitchChanged(int position) {
-                String[] operators = getResources().getStringArray(R.array.operators);
-                showToggleChangeToast(operators, position);
-            }
-        });
+    binding.operatorsSeparatedToggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
+      @Override
+      public void onToggleSwitchChanged(int position) {
+        String[] operators = getResources().getStringArray(R.array.operators);
+        showToggleChangeToast(operators, position);
+      }
+    });
 
-        binding.planetsSeparatedCircleToggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
-            @Override
-            public void onToggleSwitchChanged(int position) {
-                String[] operators = getResources().getStringArray(R.array.planets);
-                showToggleChangeToast(operators, position);
-            }
-        });
+    binding.planetsSeparatedCircleToggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
+      @Override
+      public void onToggleSwitchChanged(int position) {
+        String[] operators = getResources().getStringArray(R.array.planets);
+        showToggleChangeToast(operators, position);
+      }
+    });
 
-        return binding.getRoot();
-    }
+
+    return binding.getRoot();
+  }
 }

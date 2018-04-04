@@ -10,7 +10,7 @@ class ToggleSwitch(context: Context, attrs: AttributeSet?) : BaseToggleSwitch(co
     }
 
     var checkedPosition: Int? = null
-    var onChangeListener : OnChangeListener? = null
+    var onChangeListener: OnChangeListener? = null
 
 
     override fun onRedrawn() {
@@ -39,17 +39,12 @@ class ToggleSwitch(context: Context, attrs: AttributeSet?) : BaseToggleSwitch(co
         }
     }
 
-    fun getCheckedPosition() : Int {
-        return checkedPosition ?: -1
-    }
-
     fun setCheckedPosition(checkedPosition: Int) {
         this.checkedPosition = checkedPosition
         for ((index, toggleSwitchButton) in buttons.withIndex()) {
             if (checkedPosition == index) {
                 toggleSwitchButton.check()
-            }
-            else {
+            } else {
                 toggleSwitchButton.uncheck()
             }
         }
