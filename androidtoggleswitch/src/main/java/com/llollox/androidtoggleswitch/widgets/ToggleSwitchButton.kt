@@ -1,7 +1,10 @@
 package com.llollox.androidtoggleswitch.widgets
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.StateListDrawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +38,8 @@ class ToggleSwitchButton (context: Context, var position: Int, var positionType:
         LEFT, CENTER, RIGHT
     }
 
+    private val CHECKED_STATE_SET = intArrayOf(android.R.attr.state_checked)
+
     var toggleWidth                                 = 0
     var toggleHeight                                = LinearLayout.LayoutParams.MATCH_PARENT
     var isChecked                                   = false
@@ -50,6 +55,8 @@ class ToggleSwitchButton (context: Context, var position: Int, var positionType:
         val layoutView  = inflater.inflate(R.layout.toggle_switch_button, this, true) as LinearLayout
         val relativeLayoutContainer = layoutView.findViewById(R.id.relative_layout_container) as RelativeLayout
 
+        setAddStatesFromChildren(true)
+        
         // View
         val params = RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -73,7 +80,11 @@ class ToggleSwitchButton (context: Context, var position: Int, var positionType:
         this.layoutParams = layoutParams
 
         this.orientation = HORIZONTAL
-        this.background = getBackgroundDrawable(uncheckedBackgroundColor, uncheckedBorderColor)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            this.background = getBackgroundDrawable()
+        } else {
+            setBackgroundDrawable(getBackgroundDrawable())
+        }
 
         separator.setBackgroundColor(separatorColor)
 
@@ -88,16 +99,24 @@ class ToggleSwitchButton (context: Context, var position: Int, var positionType:
 
     // Public instance methods
 
+    override fun onCreateDrawableState(extraSpace: Int): IntArray {
+        val drawableState = super.onCreateDrawableState(extraSpace + 1)
+        if (isChecked) {
+            View.mergeDrawableStates(drawableState, CHECKED_STATE_SET)
+        }
+        return drawableState
+    }
+
     fun check() {
-        this.background = getBackgroundDrawable(checkedBackgroundColor, checkedBorderColor)
         this.isChecked = true
         checkedDecorator?.decorate(view, position)
+        refreshDrawableState()
     }
 
     fun uncheck() {
-        this.background = getBackgroundDrawable(uncheckedBackgroundColor, uncheckedBorderColor)
         this.isChecked = false
         uncheckedDecorator?.decorate(view, position)
+        refreshDrawableState()
     }
 
     fun setSeparatorVisibility(isSeparatorVisible : Boolean) {
@@ -106,18 +125,53 @@ class ToggleSwitchButton (context: Context, var position: Int, var positionType:
 
     // Private instance methods
 
-    private fun getBackgroundDrawable(backgroundColor : Int, borderColor : Int) : GradientDrawable {
+    private fun getBackgroundDrawable() : StateListDrawable {
+        val checkedBackgroundColorFaded = Color.argb(127, Color.red(checkedBackgroundColor), Color.green(checkedBackgroundColor), Color.blue(checkedBackgroundColor))
+        val cornerRadii = getCornerRadii()
 
-        val gradientDrawable = GradientDrawable()
-        gradientDrawable.setColor(backgroundColor)
+        var stateListDrawable = StateListDrawable()
 
-        gradientDrawable.cornerRadii = getCornerRadii()
+        val uncheckedDrawable = GradientDrawable()
+        uncheckedDrawable.setColor(uncheckedBackgroundColor)
 
+        uncheckedDrawable.cornerRadii = cornerRadii
+        
+        ///
+
+        val checkedDrawable = GradientDrawable()
+        checkedDrawable.setColor(checkedBackgroundColor)
+
+        checkedDrawable.cornerRadii = cornerRadii
+
+        ///
+
+        val focusedUncheckedDrawable = GradientDrawable()
+        focusedUncheckedDrawable.setColor(checkedBackgroundColorFaded)
+
+        focusedUncheckedDrawable.cornerRadii = cornerRadii
+
+        ///
+
+        val focusedCheckedDrawable = GradientDrawable()
+        focusedCheckedDrawable.setColor(checkedBackgroundColor)
+
+        focusedCheckedDrawable.cornerRadii = cornerRadii
+        
+        ///
+        
         if (borderWidth > 0) {
-            gradientDrawable.setStroke(borderWidth.toInt(), borderColor)
+            uncheckedDrawable.setStroke(borderWidth.toInt(), uncheckedBorderColor)
+            checkedDrawable.setStroke(borderWidth.toInt(), checkedBorderColor)
+            focusedUncheckedDrawable.setStroke(borderWidth.toInt(), checkedBorderColor)
+            focusedCheckedDrawable.setStroke(borderWidth.toInt(), checkedBackgroundColorFaded)
         }
 
-        return gradientDrawable
+        stateListDrawable.addState(intArrayOf(android.R.attr.state_focused, -android.R.attr.state_checked), focusedUncheckedDrawable)
+        stateListDrawable.addState(intArrayOf(android.R.attr.state_focused, android.R.attr.state_checked), focusedCheckedDrawable)
+        stateListDrawable.addState(intArrayOf(android.R.attr.state_checked), checkedDrawable)
+        stateListDrawable.addState(intArrayOf(), uncheckedDrawable)
+
+        return stateListDrawable
     }
 
     private fun getCornerRadii(): FloatArray {

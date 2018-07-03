@@ -1,12 +1,15 @@
 package com.llollox.androidtoggleswitch.widgets
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
+import android.support.annotation.ColorRes
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
@@ -24,11 +27,11 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
     companion object Default {
 
         @JvmStatic private val BORDER_RADIUS_DP            = 4
-        @JvmStatic private val BORDER_WIDTH                = 0
+        @JvmStatic private val BORDER_WIDTH                = 4
 
-        @JvmStatic private val CHECKED_BACKGROUND_COLOR    = R.color.blue
-        @JvmStatic private val CHECKED_BORDER_COLOR        = R.color.blue
-        @JvmStatic private val CHECKED_TEXT_COLOR          = android.R.color.white
+        @JvmStatic @ColorRes private val CHECKED_BACKGROUND_COLOR    = R.color.blue
+        @JvmStatic @ColorRes private val CHECKED_BORDER_COLOR        = R.color.blue
+        @JvmStatic @ColorRes private val CHECKED_TEXT_COLOR          = android.R.color.white
 
         @JvmStatic private val EMPTY_TOGGLE_DECORATOR      = object: ToggleSwitchButton.ToggleSwitchButtonDecorator {
             override fun decorate(toggleSwitchButton: ToggleSwitchButton, view: View, position: Int) {}
@@ -42,7 +45,7 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
 
         @JvmStatic private val NUM_ENTRIES                 = 0
 
-        @JvmStatic private val SEPARATOR_COLOR             = R.color.gray_very_light
+        @JvmStatic @ColorRes private val SEPARATOR_COLOR             = R.color.gray_very_light
         @JvmStatic private val SEPARATOR_VISIBLE           = true
 
         @JvmStatic private val TEXT_SIZE                   = 16f
@@ -52,9 +55,9 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
         @JvmStatic private val TOGGLE_HEIGHT               = 38f
         @JvmStatic private val TOGGLE_WIDTH                = 72f
 
-        @JvmStatic private val UNCHECKED_BACKGROUND_COLOR  = R.color.gray_light
-        @JvmStatic private val UNCHECKED_BORDER_COLOR      = R.color.gray_light
-        @JvmStatic private val UNCHECKED_TEXT_COLOR        = R.color.gray
+        @JvmStatic @ColorRes private val UNCHECKED_BACKGROUND_COLOR  = R.color.gray_light
+        @JvmStatic @ColorRes private val UNCHECKED_BORDER_COLOR      = R.color.gray_light
+        @JvmStatic @ColorRes private val UNCHECKED_TEXT_COLOR        = R.color.gray
     }
 
 
@@ -139,15 +142,15 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
 
                 checkedBackgroundColor = attributes.getColor(
                         R.styleable.BaseToggleSwitch_checkedBackgroundColor,
-                        ContextCompat.getColor(context, CHECKED_BACKGROUND_COLOR))
+                        getStyleColor(context, R.attr.colorPrimary, CHECKED_BACKGROUND_COLOR))
 
                 checkedBorderColor = attributes.getColor(
                         R.styleable.BaseToggleSwitch_checkedBorderColor,
-                        ContextCompat.getColor(context, CHECKED_BORDER_COLOR))
+                        getStyleColor(context, R.attr.colorPrimary, CHECKED_BORDER_COLOR))
 
                 checkedTextColor = attributes.getColor(
                         R.styleable.BaseToggleSwitch_checkedTextColor,
-                        ContextCompat.getColor(context, CHECKED_TEXT_COLOR))
+                        getStyleColor(context, android.R.attr.textColorPrimary, CHECKED_TEXT_COLOR))
 
                 borderRadius = attributes.getDimensionPixelSize(
                         R.styleable.BaseToggleSwitch_borderRadius,
@@ -163,19 +166,19 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
 
                 uncheckedBackgroundColor = attributes.getColor(
                         R.styleable.BaseToggleSwitch_uncheckedBackgroundColor,
-                        ContextCompat.getColor(context, UNCHECKED_BACKGROUND_COLOR))
+                        getStyleColor(context, R.attr.colorButtonNormal, UNCHECKED_BACKGROUND_COLOR))
 
                 uncheckedBorderColor = attributes.getColor(
                         R.styleable.BaseToggleSwitch_uncheckedBorderColor,
-                        ContextCompat.getColor(context, UNCHECKED_BORDER_COLOR))
+                        getStyleColor(context, R.attr.colorButtonNormal, UNCHECKED_BORDER_COLOR))
 
                 uncheckedTextColor = attributes.getColor(
                         R.styleable.BaseToggleSwitch_uncheckedTextColor,
-                        ContextCompat.getColor(context, UNCHECKED_TEXT_COLOR))
+                        getStyleColor(context, android.R.attr.textColorPrimary, UNCHECKED_TEXT_COLOR))
 
                 separatorColor = attributes.getColor(
                         R.styleable.BaseToggleSwitch_separatorColor,
-                        ContextCompat.getColor(context, SEPARATOR_COLOR))
+                        getStyleColor(context, android.R.attr.textColorSecondary, SEPARATOR_COLOR))
 
                 separatorVisible = attributes.getBoolean(
                         R.styleable.BaseToggleSwitch_separatorVisible,
@@ -427,4 +430,57 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
         orientation = HORIZONTAL
     }
 
+    private fun getStyleColor(context: Context, r_attr_theme_color: Int, @ColorRes defaultColorResId: Int): Int {
+        val typedValue = TypedValue()
+        if (context == null) {
+            return ContextCompat.getColor(context, defaultColorResId)
+        }
+        val theme = context!!.theme
+
+        try {
+            if (!theme.resolveAttribute(r_attr_theme_color, typedValue, true)) {
+                return ContextCompat.getColor(context, defaultColorResId)
+            }
+        } catch (ignore : Exception) {
+            return ContextCompat.getColor(context, defaultColorResId)
+        }
+
+        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return typedValue.data
+        }
+
+        try {
+            val arr = context!!.obtainStyledAttributes(typedValue.data,
+                    intArrayOf(r_attr_theme_color))
+            var c = arr.getColor(0, -1)
+            arr.recycle()
+            if (c == -1) {
+                // Sometimes TypedArray.getColor fails, but using TypedValue.resourceId
+                // seems to work fine.  Could be related to Leanback?
+                // TypedArray.getColor:
+                // - failed | API 22 | DarkTheme  | Android TV
+                // - failed | API 22 | DarkTheme  | Nexus 7
+                // - Ok     | API 22 | LightTheme | Android TV
+                // - Ok     | API 22 | LightTheme | Nexus 7
+                // - Ok     | API 19 | LightTheme | GT 3
+                // - Ok     | API 19 | DarkTheme  | GT 3
+                // - Ok     | API 18 | LightTheme | Smartphone
+                // - Ok     | API 18 | DarkTheme  | Smartphone
+                // - Ok     | API 17 | DarkTheme  | FireTV
+                c = ContextCompat.getColor(context!!, typedValue.resourceId)
+                if (c >= 0) {
+                    return c;
+                }
+                return ContextCompat.getColor(context, defaultColorResId)
+            } else {
+                return c
+            }
+        } catch (ignore: Resources.NotFoundException) {
+        }
+
+        if (typedValue.data >= 0) {
+            return typedValue.data
+        }
+        return ContextCompat.getColor(context, defaultColorResId)
+    }
 }

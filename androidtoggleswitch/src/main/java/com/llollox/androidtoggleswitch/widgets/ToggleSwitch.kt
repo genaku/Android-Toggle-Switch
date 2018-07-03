@@ -3,6 +3,9 @@ package com.llollox.androidtoggleswitch.widgets
 import android.content.Context
 import android.util.AttributeSet
 
+/**
+ * A Layout containing [ToggleSwitchButton]
+ */
 class ToggleSwitch(context: Context, attrs: AttributeSet?) : BaseToggleSwitch(context, attrs) {
 
     interface OnChangeListener {
