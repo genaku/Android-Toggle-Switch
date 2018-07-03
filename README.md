@@ -1,31 +1,15 @@
 # Android-Toggle-Switch
 
 ![Alt text](https://img.shields.io/badge/license-MIT-green.svg?style=flat)
-[![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android%20Toggle%20Switch-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/3235)
+[![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 A customizable extension of Android Switches that supports also more than 2 items.
 
-## Installation
+## BiglySoftware/Android-Toggle-Switch Fork Changes
 
-#### Gradle
-Add Gradle dependency:
-
-```groovy
-dependencies {
-    compile 'com.llollox:androidtoggleswitch:2.0.1'
-}
-```
-
-#### Maven
-```xml
-<dependency>
-  <groupId>com.llollox</groupId>
-  <artifactId>androidtoggleswitch</artifactId>
-  <version>2.0.1</version>
-  <type>pom</type>
-</dependency>
-```
+* Added focus handling for Android TV and other devices with no touch (DPAD)
+* Some default colors are now based on theme (Uses colorPrimary, textColorPrimary, colorButtonNormal, etc).  All widget states have not been fully tested for color correctness.
+* Minimum SDK reduced to AppCompat minimum of 14
 
 ## Basic Usage
 
