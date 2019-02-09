@@ -52,7 +52,7 @@ class ToggleSwitch(context: Context, attrs: AttributeSet?) : BaseToggleSwitch(co
             manageSeparatorVisiblity()
         } else {
             for ((index, toggleSwitchButton) in buttons.withIndex()) {
-                toggleSwitchButton.check()
+                toggleSwitchButton.uncheck()
             }
         }
     }
