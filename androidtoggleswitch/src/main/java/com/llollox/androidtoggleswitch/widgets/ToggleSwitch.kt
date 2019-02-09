@@ -40,14 +40,20 @@ class ToggleSwitch(context: Context, attrs: AttributeSet?) : BaseToggleSwitch(co
     }
 
     fun setCheckedPosition(checkedPosition: Int) {
-        this.checkedPosition = checkedPosition
-        for ((index, toggleSwitchButton) in buttons.withIndex()) {
-            if (checkedPosition == index) {
+        if (checkedPosition != -1) {
+            this.checkedPosition = checkedPosition
+            for ((index, toggleSwitchButton) in buttons.withIndex()) {
+                if (checkedPosition == index) {
+                    toggleSwitchButton.check()
+                } else {
+                    toggleSwitchButton.uncheck()
+                }
+            }
+            manageSeparatorVisiblity()
+        } else {
+            for ((index, toggleSwitchButton) in buttons.withIndex()) {
                 toggleSwitchButton.check()
-            } else {
-                toggleSwitchButton.uncheck()
             }
         }
-        manageSeparatorVisiblity()
     }
 }
