@@ -3,17 +3,16 @@ package com.llollox.androidtoggleswitch.widgets
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
-import androidx.annotation.ColorRes
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import com.llollox.androidtoggleswitch.R
 import java.util.*
 
@@ -217,12 +216,12 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
 
                     val entriesList = ArrayList<String>()
 
-                    val textToggleLeft  = attributes.getString(R.styleable.BaseToggleSwitch_textToggleLeft)
-                    val textToggleRight = attributes.getString(R.styleable.BaseToggleSwitch_textToggleRight)
+                    val textToggleLeft  = attributes.getString(R.styleable.BaseToggleSwitch_textToggleLeft) ?: ""
+                    val textToggleRight = attributes.getString(R.styleable.BaseToggleSwitch_textToggleRight) ?: ""
 
                     if (!TextUtils.isEmpty(textToggleLeft) && !TextUtils.isEmpty(textToggleRight)) {
                         entriesList.add(textToggleLeft)
-                        val textToggleCenter  = attributes.getString(R.styleable.BaseToggleSwitch_textToggleCenter)
+                        val textToggleCenter  = attributes.getString(R.styleable.BaseToggleSwitch_textToggleCenter) ?: ""
                         if (!TextUtils.isEmpty(textToggleCenter)) {
                             entriesList.add(textToggleCenter)
                         }
@@ -430,7 +429,7 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
         orientation = HORIZONTAL
     }
 
-    private fun getStyleColor(context: Context, r_attr_theme_color: Int, @ColorRes defaultColorResId: Int): Int {
+    private fun getStyleColor(context: Context, rAttrThemeColor: Int, @ColorRes defaultColorResId: Int): Int {
         val typedValue = TypedValue()
         if (context == null) {
             return ContextCompat.getColor(context, defaultColorResId)
@@ -438,7 +437,7 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
         val theme = context!!.theme
 
         try {
-            if (!theme.resolveAttribute(r_attr_theme_color, typedValue, true)) {
+            if (!theme.resolveAttribute(rAttrThemeColor, typedValue, true)) {
                 return ContextCompat.getColor(context, defaultColorResId)
             }
         } catch (ignore : Exception) {
@@ -451,7 +450,7 @@ abstract class BaseToggleSwitch : LinearLayout, ToggleSwitchButton.Listener {
 
         try {
             val arr = context!!.obtainStyledAttributes(typedValue.data,
-                    intArrayOf(r_attr_theme_color))
+                    intArrayOf(rAttrThemeColor))
             var c = arr.getColor(0, -1)
             arr.recycle()
             if (c == -1) {
