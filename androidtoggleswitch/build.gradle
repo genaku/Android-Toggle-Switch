@@ -1,11 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
 
-ext {
-    PUBLISH_GROUP_ID    = 'com.llollox'
-    PUBLISH_ARTIFACT_ID = 'androidtoggleswitch'
-    PUBLISH_VERSION     = '2.0.1'
-}
+group='com.github.genaku'
 
 android {
     compileSdkVersion 29
